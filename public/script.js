@@ -2,12 +2,11 @@ new Vue({
 	el: "#app",
 	data: {
 		total: 0,
-		products: [
-			{ title: "Product 1", id: 1, price: 9.99 },
-			{ title: "Product 2", id: 2, price: 10.99 },
-			{ title: "Product 3", id: 3, price: 11.99 },
-		],
-		cart: []
+		products: [],
+		cart: [],
+		search: "cat",
+		lastSearch: "",
+		loading: false,
 	},
 	methods: {
 		addToCart: function (product) {
@@ -28,5 +27,24 @@ new Vue({
 				});
 			}
 		},
+		onSubmit: function() {
+			this.products = [];
+			this.loading = true;
+			let path = `/search?q=${this.search}`;
+			this.$http.get(path)
+			.then(response => {
+					this.products = response.body;
+					this.lastSearch = this.search;
+					this.loading = false;
+			})
+		},
+	},
+	filters: {
+		currency: function(price) {
+			return `$${price.toFixed(2)}`
+		}
+	},
+	created: function() {
+		this.onSubmit();
 	}
 });
