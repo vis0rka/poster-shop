@@ -1,17 +1,17 @@
-var express = require("express");
-var app = express();
-var path = require("path");
-var server = require("http").createServer(app);
-var fs = require("fs");
+const express = require("express");
+const app = express();
+const path = require("path");
+const server = require("http").createServer(app);
+const fs = require("fs");
 
-var bodyParser = require("body-parser");
+const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
 app.get("/", function(req, res) {
 	res.sendFile(path.join(__dirname + "/index.html"));
 });
 
-var directory;
+let directory;
 fs.readFile("./directory.json", "utf8", function(err, data) {
 	directory = JSON.parse(data);
 	if (err) {
@@ -20,7 +20,7 @@ fs.readFile("./directory.json", "utf8", function(err, data) {
 });
 
 app.get("/search", function(req, res) {
-	var results = directory.reduce(function(acc, file) {
+	const results = directory.reduce(function(acc, file) {
 		if (file.tags.indexOf(req.query.q) !== -1) {
 			acc.push({
 				id: file.id,
@@ -41,7 +41,7 @@ if (process.env.NODE_ENV !== "production") {
 	require("reload")(app);
 }
 
-var port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 server.listen(port, function () {
 	console.log("Listening on port ".concat(port));
 });
